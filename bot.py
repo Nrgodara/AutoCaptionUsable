@@ -32,7 +32,8 @@ class autocaption(Client):
                 logger.info(f"Attempt {attempt + 1} of {retries} to start the client.")
                 await self.start()
                 logger.info("Client started successfully.")
-                await self.run()
+                # Handle the bot's tasks
+                await self.idle()  # Keep the bot running and listening for events
                 break
             except pyrogram.errors.BadMsgNotification as e:
                 logger.error(f"BadMsgNotification error: {e}. Retrying in {delay} seconds...")
@@ -46,5 +47,8 @@ class autocaption(Client):
 if __name__ == "__main__":
     client = autocaption()
 
-    # Use asyncio.run to ensure the event loop runs correctly
-    asyncio.run(client.start_with_retries())
+    # Run the client's start_with_retries method using the event loop
+    try:
+        asyncio.run(client.start_with_retries())
+    except RuntimeError as e:
+        logger.error(f"Runtime error occurred: {e}")
